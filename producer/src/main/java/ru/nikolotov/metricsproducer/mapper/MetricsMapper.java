@@ -1,7 +1,7 @@
 package ru.nikolotov.metricsproducer.mapper;
 
 import org.mapstruct.Mapper;
-import ru.nikolotov.metricsproducer.dto.MetricsDto;
+import ru.nikolotov.common.dto.MetricsDto;
 import ru.nikolotov.metricsproducer.service.model.MetricModel;
 
 @Mapper

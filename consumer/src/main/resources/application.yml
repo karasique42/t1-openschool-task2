@@ -6,10 +6,18 @@ spring:
     consumer:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "ru.nikolotov.*"
-    #      group-id:
+        spring.json.trusted.packages: "ru.nikolotov.common.*"
     bootstrap-servers: localhost:9092
+  liquibase:
+    change-log: db/db.changelog-master.xml
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
 
-supplier:
+producer:
   host: localhost:8081
-  url: http://${supplier.host}/api/v1
+  url: http://${producer.host}/api/v1

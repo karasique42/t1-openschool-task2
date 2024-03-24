@@ -2,22 +2,32 @@ version: "3.7"
 
 services:
 
-#  consumer:
-#    build: ../t1-openschool/consumer
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      SUPPLIER_HOST: supplier:8081
-#
-#  supplier:
-#    build: ../t1-openschool/supplier
-#    ports:
-#      - "8081:8081"
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+  consumer:
+    build: ./consumer
+    hostname: consumer
+    ports:
+      - "8082:8082"
+    environment:
+      PRODUCER_HOST: producer:8081
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka1:19092
+    depends_on:
+      - producer
+      - db
+      - kafka1
 
+  producer:
+    build: ./producer
+    hostname: producer
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka1:19092
+    depends_on:
+      - kafka1
   db:
     image: postgres:15
+    hostname: db
     ports:
       - "5432:5432"
     environment:

@@ -3,17 +3,14 @@ package ru.nikolotov.metricsproducer.service;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.nikolotov.metricsproducer.kafka.KafkaSender;
 import ru.nikolotov.metricsproducer.service.model.CpuMetrics;
-import ru.nikolotov.metricsproducer.service.model.DbMetrics;
 import ru.nikolotov.metricsproducer.service.model.MemoryMetrics;
 import ru.nikolotov.metricsproducer.service.model.MetricModel;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +20,6 @@ public class MetricsService {
     private final KafkaSender kafkaSender;
     private final MeterRegistry meterRegistry;
 
-//    @Scheduled(fixedRate = 30, timeUnit = TimeUnit.SECONDS)
     public void sendMetrics() {
         log.info("Sending metrics...");
         kafkaSender.sendMetrics(collectMetrics());
@@ -32,17 +28,8 @@ public class MetricsService {
 
     private MetricModel collectMetrics() {
         UUID id = UUID.randomUUID();
-        Long timestamp = System.currentTimeMillis();
-        return new MetricModel(id, timestamp, collectCpuMetrics(), collectMemoryMetrics(), collectDbMetrics());
-    }
-
-    private DbMetrics collectDbMetrics() {
-        double hikariActiveConnections = meterRegistry.get("hikaricp.connections.active")
-                .tag("pool", "HikariPool-1").gauge().value();
-        double hikariIdleConnections = meterRegistry.get("hikaricp.connections.idle")
-                .tag("pool", "HikariPool-1").gauge().value();
-
-        return new DbMetrics(hikariIdleConnections, hikariActiveConnections);
+        LocalDateTime timestamp = LocalDateTime.now();
+        return new MetricModel(id, timestamp, collectCpuMetrics(), collectMemoryMetrics());
     }
 
     private MemoryMetrics collectMemoryMetrics() {

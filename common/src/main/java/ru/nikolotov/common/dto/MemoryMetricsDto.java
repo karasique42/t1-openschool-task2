@@ -1,4 +1,4 @@
-package ru.nikolotov.metricsconsumer.dto;
+package ru.nikolotov.common.dto;
 
 import lombok.Data;
 
