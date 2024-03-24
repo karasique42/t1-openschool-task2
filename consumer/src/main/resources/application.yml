@@ -1,0 +1,15 @@
+server:
+  port: 8082
+
+spring:
+  kafka:
+    consumer:
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "ru.nikolotov.*"
+    #      group-id:
+    bootstrap-servers: localhost:9092
+
+supplier:
+  host: localhost:8081
+  url: http://${supplier.host}/api/v1
